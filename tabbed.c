@@ -147,7 +147,7 @@ static void (*handler[LASTEvent]) (const XEvent *) = {
 	[MapRequest] = maprequest,
 	[PropertyNotify] = propertynotify,
 };
-static int bh, wx, wy, ww, wh;
+static int bh, wx, wy, ww, wh, vbh;
 static unsigned int numlockmask = 0;
 static Bool running = True, nextfocus, doinitspawn = True,
 	    fillagain = False, closelastclient = False;
@@ -302,7 +302,7 @@ die(const char *errstr, ...) {
 void
 drawbar(void) {
 	XftColor *col;
-	int c, fc, width, n = 0;
+	int c, fc, width, n = 0, nbh, i;
 	char *name = NULL;
 
 	if(nclients == 0) {
@@ -310,11 +310,20 @@ drawbar(void) {
 		dc.w = ww;
 		XFetchName(dpy, win, &name);
 		drawtext(name ? name : "", dc.norm);
-		XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, bh, 0, 0);
+		XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, vbh, 0, 0);
 		XSync(dpy, False);
 
 		return;
 	}
+
+	nbh = nclients > 1 ? vbh : 0;
+	if (bh != nbh) {
+		bh = nbh;
+		for (i = 0; i < nclients; i++)
+			XMoveResizeWindow(dpy, clients[i]->win, 0, bh, ww, wh - bh);
+	}
+	if (bh == 0)
+		return;
 
 	width = ww;
 	clients[nclients-1]->tabx = -1;
@@ -884,7 +893,7 @@ setup(void) {
 	screen = DefaultScreen(dpy);
 	root = RootWindow(dpy, screen);
 	initfont(font);
-	bh = dc.h = dc.font.height + 2;
+	vbh = dc.h = dc.font.height + 2;
 
 	/* init atoms */
 	wmatom[WMProtocols] = XInternAtom(dpy, "WM_PROTOCOLS", False);
