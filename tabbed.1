@@ -12,6 +12,8 @@ tabbed \- generic tabbed interface
 .IR geometry ]
 .RB [ \-n
 .IR name ]
+.RB [ \-w
+.IR wmclass ]
 .RB [ \-p
 .IR [ s +/- ] pos ]
 .RB [ \-r
@@ -49,6 +51,10 @@ for further details.
 .BI \-n " name"
 will set the WM_CLASS attribute to
 .I name.
+.TP
+.BI \-w " wmclass"
+will set the window class attribute to
+.I class.
 .TP
 .BI \-p " [ s +/-] pos"
 will set the absolute or relative position of where to start a new tab. When

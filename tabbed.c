@@ -984,7 +984,7 @@ setup(void) {
 	xerrorxlib = XSetErrorHandler(xerror);
 
 	class_hint.res_name = wmname;
-	class_hint.res_class = "tabbed";
+	class_hint.res_class = wmclass;
 	XSetClassHint(dpy, win, &class_hint);
 
 	size_hint = XAllocSizeHints();
@@ -1198,7 +1198,7 @@ char *argv0;
 
 void
 usage(void) {
-	die("usage: %s [-dfhsv] [-g geometry] [-n name] [-p [s+/-]pos] [-r narg] "
+	die("usage: %s [-dfhsv] [-g geometry] [-n name] [-w wmclass] [-p [s+/-]pos] [-r narg] "
 		"[-u color] [-U color] [-t color] [-T color] command...\n", argv0);
 }
 
@@ -1256,6 +1256,9 @@ main(int argc, char *argv[]) {
 		break;
 	case 'U':
 		normfgcolor = EARGF(usage());
+		break;
+	case 'w':
+		wmclass = EARGF(usage());
 		break;
 	default:
 	case 'h':
