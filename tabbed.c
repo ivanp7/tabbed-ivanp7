@@ -164,6 +164,9 @@ static char **cmd = NULL;
 static char *wmname = "tabbed";
 static const char *geometry = NULL;
 
+static Colormap cmap;
+static Visual *visual = NULL;
+
 char *argv0;
 
 /* configuration, allows nested code to access above variables */
@@ -244,8 +247,7 @@ configurenotify(const XEvent *e) {
 		ww = ev->width;
 		wh = ev->height;
 		XFreePixmap(dpy, dc.drawable);
-		dc.drawable = XCreatePixmap(dpy, root, ww, wh,
-				DefaultDepth(dpy, screen));
+		dc.drawable = XCreatePixmap(dpy, root, ww, wh, 32);
 		if(sel > -1)
 			resize(sel, ww, wh - bh);
 		XSync(dpy, False);
@@ -383,7 +385,7 @@ drawtext(const char *text, XftColor col[ColLast]) {
 		for(i = len; i && i > len - 3; buf[--i] = '.');
 	}
 
-	d = XftDrawCreate(dpy, dc.drawable, DefaultVisual(dpy, screen), DefaultColormap(dpy, screen));
+	d = XftDrawCreate(dpy, dc.drawable, visual, cmap);
 
 	XftDrawStringUtf8(d, &col[ColFG], dc.font.xfont, x, y, (XftChar8 *) buf, len);
 	XftDrawDestroy(d);
@@ -520,7 +522,7 @@ XftColor
 getcolor(const char *colstr) {
 	XftColor color;
 
-	if(!XftColorAllocName(dpy, DefaultVisual(dpy, screen), DefaultColormap(dpy, screen), colstr, &color))
+	if(!XftColorAllocName(dpy, visual, cmap, colstr, &color))
 		die("tabbed: cannot allocate color '%s'\n", colstr);
 
 	return color;
@@ -927,16 +929,56 @@ setup(void) {
 			wy = dh + wy - wh - 1;
 	}
 
+	XVisualInfo *vis;
+	XRenderPictFormat *fmt;
+	int nvi;
+	int i;
+
+	XVisualInfo tpl = {
+		.screen = screen,
+		.depth = 32,
+		.class = TrueColor
+	};
+
+	vis = XGetVisualInfo(dpy, VisualScreenMask | VisualDepthMask | VisualClassMask, &tpl, &nvi);
+	for(i = 0; i < nvi; i ++) {
+		fmt = XRenderFindVisualFormat(dpy, vis[i].visual);
+		if (fmt->type == PictTypeDirect && fmt->direct.alphaMask) {
+			visual = vis[i].visual;
+			break;
+		}
+	}
+
+	XFree(vis);
+
+	if (! visual) {
+		fprintf(stderr, "Couldn't find ARGB visual.\n");
+		exit(1);
+	}
+
+	cmap = XCreateColormap( dpy, root, visual, None);
 	dc.norm[ColBG] = getcolor(normbgcolor);
 	dc.norm[ColFG] = getcolor(normfgcolor);
 	dc.sel[ColBG] = getcolor(selbgcolor);
 	dc.sel[ColFG] = getcolor(selfgcolor);
-	dc.drawable = XCreatePixmap(dpy, root, ww, wh,
-			DefaultDepth(dpy, screen));
-	dc.gc = XCreateGC(dpy, root, 0, 0);
+	XSetWindowAttributes attrs;
+	attrs.background_pixel = dc.norm[ColBG].pixel;
+	attrs.border_pixel = dc.norm[ColFG].pixel;
+	attrs.bit_gravity = NorthWestGravity;
+	attrs.event_mask = FocusChangeMask | KeyPressMask
+		| ExposureMask | VisibilityChangeMask | StructureNotifyMask
+		| ButtonMotionMask | ButtonPressMask | ButtonReleaseMask;
+	attrs.background_pixmap = None ;
+	attrs.colormap = cmap;
 
-	win = XCreateSimpleWindow(dpy, root, wx, wy, ww, wh, 0,
-			dc.norm[ColFG].pixel, dc.norm[ColBG].pixel);
+	win = XCreateWindow(dpy, root, wx, wy,
+	ww, wh, 0, 32, InputOutput,
+	visual, CWBackPixmap | CWBorderPixel | CWBitGravity
+	| CWEventMask | CWColormap, &attrs);
+
+	dc.drawable = XCreatePixmap(dpy, win, ww, wh,
+	                            32);
+	dc.gc = XCreateGC(dpy, dc.drawable, 0, 0);
 	XMapRaised(dpy, win);
 	XSelectInput(dpy, win, SubstructureNotifyMask|FocusChangeMask|
 			ButtonPressMask|ExposureMask|KeyPressMask|PropertyChangeMask|
