@@ -35,29 +35,29 @@ static Bool npisrelative  = True;
 #define MODKEY ControlMask|ShiftMask
 static Key keys[] = { \
     /* modifier                     key        function        argument */
-    { MODKEY,                       XK_Return, focusonce,      { 0 } },
-    { MODKEY,                       XK_Return, spawn,          { 0 } },
-    { MODKEY,                       XK_t,      spawn,          SETPROP("_TABBED_SELECT_TAB") },
+    { MODKEY,                       36 /*XK_Return*/, focusonce,      { 0 } },
+    { MODKEY,                       36 /*XK_Return*/, spawn,          { 0 } },
+    { MODKEY,                       28 /*XK_t*/,      spawn,          SETPROP("_TABBED_SELECT_TAB") },
 
-    { MODKEY,                       XK_l,      rotate,         { .i = +1 } },
-    { MODKEY,                       XK_h,      rotate,         { .i = -1 } },
-    { MODKEY,                       XK_j,      movetab,        { .i = -1 } },
-    { MODKEY,                       XK_k,      movetab,        { .i = +1 } },
-    { MODKEY,                       XK_Tab,    rotate,         { .i = 0 } },
+    { MODKEY,                       46 /*XK_l*/,      rotate,         { .i = +1 } },
+    { MODKEY,                       43 /*XK_h*/,      rotate,         { .i = -1 } },
+    { MODKEY,                       44 /*XK_j*/,      movetab,        { .i = -1 } },
+    { MODKEY,                       45 /*XK_k*/,      movetab,        { .i = +1 } },
+    { MODKEY,                       23 /*XK_Tab*/,    rotate,         { .i = 0 } },
 
-    { MODKEY,                       XK_1,      move,           { .i = 0 } },
-    { MODKEY,                       XK_2,      move,           { .i = 1 } },
-    { MODKEY,                       XK_3,      move,           { .i = 2 } },
-    { MODKEY,                       XK_4,      move,           { .i = 3 } },
-    { MODKEY,                       XK_5,      move,           { .i = 4 } },
-    { MODKEY,                       XK_6,      move,           { .i = 5 } },
-    { MODKEY,                       XK_7,      move,           { .i = 6 } },
-    { MODKEY,                       XK_8,      move,           { .i = 7 } },
-    { MODKEY,                       XK_9,      move,           { .i = 8 } },
-    { MODKEY,                       XK_0,      move,           { .i = 9 } },
+    { MODKEY,                       10 /*XK_1*/,      move,           { .i = 0 } },
+    { MODKEY,                       11 /*XK_2*/,      move,           { .i = 1 } },
+    { MODKEY,                       12 /*XK_3*/,      move,           { .i = 2 } },
+    { MODKEY,                       13 /*XK_4*/,      move,           { .i = 3 } },
+    { MODKEY,                       14 /*XK_5*/,      move,           { .i = 4 } },
+    { MODKEY,                       15 /*XK_6*/,      move,           { .i = 5 } },
+    { MODKEY,                       16 /*XK_7*/,      move,           { .i = 6 } },
+    { MODKEY,                       17 /*XK_8*/,      move,           { .i = 7 } },
+    { MODKEY,                       18 /*XK_9*/,      move,           { .i = 8 } },
+    { MODKEY,                       19 /*XK_0*/,      move,           { .i = 9 } },
 
-    { MODKEY,                       XK_q,      killclient,     { 0 } },
+    { MODKEY,                       24 /*XK_q*/,      killclient,     { 0 } },
 
-    { 0,                            XK_F11,    fullscreen,     { 0 } },
+    { 0,                            95 /*XK_F11*/,    fullscreen,     { 0 } },
 };
 
