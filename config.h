@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 
-#define FONT "xos4 Terminus:size=10"
+#define FONT "xos4 Terminus:size=12"
 
 /* appearance */
 static const char font[]        = FONT;
