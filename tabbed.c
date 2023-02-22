@@ -1045,7 +1045,7 @@ setup(void)
 	xerrorxlib = XSetErrorHandler(xerror);
 
 	class_hint.res_name = wmname;
-	class_hint.res_class = "tabbed";
+	class_hint.res_class = wmclass;
 	XSetClassHint(dpy, win, &class_hint);
 
 	size_hint = XAllocSizeHints();
@@ -1263,7 +1263,7 @@ xsettitle(Window w, const char *str)
 void
 usage(void)
 {
-	die("usage: %s [-dfksv] [-g geometry] [-n name] [-p [s+/-]pos]\n"
+	die("usage: %s [-dfksv] [-g geometry] [-n name] [-w wmclass] [-p [s+/-]pos]\n"
 	    "       [-r narg] [-o color] [-O color] [-t color] [-T color]\n"
 	    "       [-u color] [-U color] command...\n", argv0);
 }
@@ -1331,6 +1331,9 @@ main(int argc, char *argv[])
 	case 'v':
 		die("tabbed-"VERSION", © 2009-2016 tabbed engineers, "
 		    "see LICENSE for details.\n");
+		break;
+	case 'w':
+		wmclass = EARGF(usage());
 		break;
 	default:
 		usage();

@@ -12,8 +12,10 @@ tabbed \- generic tabbed interface
 .IR geometry ]
 .RB [ \-n
 .IR name ]
+.RB [ \-w
+.IR wmclass ]
 .RB [ \-p
-.RB [ s {+/-} ] \fIpos\fR ]
+.IR [ s {+/-} ] \fIpos\fR ]
 .RB [ \-o
 .IR normbgcol ]
 .RB [ \-O
@@ -65,7 +67,11 @@ WM_DELETE_WINDOW is sent.
 will set the WM_CLASS attribute to
 .I name.
 .TP
-.BR \-p " [" s {+-}] \fIpos\fR
+.BI \-w " wmclass"
+will set the window class attribute to
+.I class.
+.TP
+.BI \-p " [" s {+-}] \fIpos\fR
 will set the absolute or relative position of where to start a new tab. When
 .I pos
 is is given without 's' in front it is an absolute position. Then negative
